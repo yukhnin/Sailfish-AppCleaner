@@ -7,7 +7,8 @@ Cleaner::Cleaner(QObject *parent) : QObject(parent) {
 
 /**
  * @brief Cleaner::applicationList
- * @return
+ * Function searches for applications, the calculation of the cache size and config
+ * @return list of applications found
  */
 QVariant Cleaner::applicationList() {
 	qDebug() << "C++_UPDATE_VALUES START";
@@ -48,6 +49,13 @@ QVariant Cleaner::applicationList() {
 }
 
 
+
+/**
+ * @brief Cleaner::parseIconPath
+ * Function searches the application icon
+ * @param path to app
+ * @return  path to icon app
+ */
 QString Cleaner::parseIconPath(const QString &path)
 {
 	if (path.isEmpty()) {
@@ -67,9 +75,9 @@ QString Cleaner::parseIconPath(const QString &path)
 
 /**
  * @brief Cleaner::removeCache
- * Function
- * @param uiAppID
- * @return
+ * Function deletes the cache directory applications
+ * @param sAppName Application name
+ * @return true or false
  */
 
 bool Cleaner::removeCache(QString sAppName) {
@@ -86,6 +94,13 @@ bool Cleaner::removeCache(QString sAppName) {
 
 }
 
+
+/**
+ * @brief Cleaner::removeConfig
+ * Function deletes the config directory applications
+ * @param sAppName Application name
+ * @return true or false
+ */
 bool Cleaner::removeConfig(QString sAppName) {
 	if (QDir(sPath_Config + sAppName).exists()) {
 		qDebug() << "REMOVE CONFIG " + sPath_Cache + sAppName;
@@ -98,6 +113,12 @@ bool Cleaner::removeConfig(QString sAppName) {
 	}
 }
 
+/**
+ * @brief Cleaner::stopApp
+ * Function kill selected application
+ * @param sAppName Application name
+ * @return
+ */
 bool Cleaner::stopApp(QString sAppName) {
 	qDebug() << "STOP APP " + sAppName;
 	QProcess p;
@@ -114,8 +135,14 @@ bool Cleaner::stopApp(QString sAppName) {
 }
 
 
-bool Cleaner::checkRunApp(QString sAppName) {
 
+/**
+ * @brief Cleaner::checkRunApp
+ * Function check application status
+ * @param sAppName Application name
+ * @return true - running, false - stopped
+ */
+bool Cleaner::checkRunApp(QString sAppName) {
 	qDebug() << "CHECK APP RUNNING " + sAppName;
 	//qDebug() << "ps -ef | grep \""+ sAppName +"\" | grep -v \"grep\" | wc -l";
 	QProcess p;
@@ -137,12 +164,22 @@ bool Cleaner::checkRunApp(QString sAppName) {
 }
 
 
-
+/**
+ * @brief Cleaner::openAppDetails
+ * NOT USED
+ * @param sAppName
+ */
 void Cleaner::openAppDetails(QString sAppName) {
 	qDebug() << "OPEN APP DETAILS " + sAppName;
 
 }
 
+
+/**
+ * @brief Cleaner::checkConfig
+ * @param sAppName Application name
+ * @return true - application have config
+ */
 bool Cleaner::checkConfig(QString sAppName) {
 	qDebug() << "Check configuration: " + sPath_Config + sAppName;
 	QString sResult = getSize_recurs(sPath_Config + sAppName);
@@ -151,6 +188,12 @@ bool Cleaner::checkConfig(QString sAppName) {
 }
 
 
+/**
+ * @brief Cleaner::getSize_recurs
+ * Аunction to determine the size of a directory
+ * @param path to dir
+ * @return
+ */
 QString Cleaner::getSize_recurs(QString path) {
 	//qDebug() << "Проверяем каталог: " + path;
 	QProcess p;
@@ -166,7 +209,10 @@ QString Cleaner::getSize_recurs(QString path) {
 }
 
 
-
+/**
+ * @brief Cleaner::clearDir
+ * @param path
+ */
 void Cleaner::clearDir( const QString path ) {
 	QDir dir( path + "/" );
 	qDebug() << "Remove folder: " + path;
@@ -180,6 +226,8 @@ void Cleaner::clearDir( const QString path ) {
 	}
 	applicationList();
 }
+
+
 
 void Cleaner::updateList() {
 	emit applicationListChanged();
